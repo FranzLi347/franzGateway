@@ -1,0 +1,8 @@
+
+\
+java:S1118":Add a private constructor to hide the implicit public one.(ˆáì¦ùÿÿÿÿ8²Ã‰×1
+o
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 30 to the 15 allowed.(îşİ¼8³Ã‰×1
+G
+java:S11810"%Catch Exception instead of Throwable.(’¯í»ÿÿÿÿÿ8µ°Š×1
+J	java:S1080")Either remove or fill this block of code.(’¯í»ÿÿÿÿÿ8¸Ã‰×1
