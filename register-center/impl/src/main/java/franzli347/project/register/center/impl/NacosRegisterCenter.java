@@ -112,20 +112,26 @@ public class NacosRegisterCenter implements RegisterCenter {
     }
 
     @Override
-    public void subscribeAllServices(RegisterCenterListener registerCenterListener) {
-    /*    //服务订阅首先需要将我们的监听器加入到我们的服务列表中
+    public void registerListener(RegisterCenterListener registerCenterListener) {
+        //服务订阅首先需要将我们的监听器加入到我们的服务列表中
         registerCenterListenerList.add(registerCenterListener);
-        //进行服务订阅
-        doSubscribeAllServices();
-        //可能有新服务加入，所以需要有一个定时任务来检查
-        ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(1, new NameThreadFactory(
-                "doSubscribeAllServices"));
-        //循环执行服务发现与订阅操作
-        scheduledThreadPool.scheduleWithFixedDelay(this::doSubscribeAllServices, 10, 10, TimeUnit.SECONDS);*/
-        throw new UnsupportedOperationException();
     }
 
-   /* private void doSubscribeAllServices() {
+    @Override
+    public void subscribeAllServices() {
+        //进行服务订阅
+        doSubscribeAllServices();
+        addSubscribeTask();
+    }
+
+    private void addSubscribeTask() {
+        //可能有新服务加入，所以需要有一个定时任务来检查
+        ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(1, new NameThreadFactory("doSubscribeAllServices"));
+        //循环执行服务发现与订阅操作
+        scheduledThreadPool.scheduleWithFixedDelay(this::doSubscribeAllServices, 10, 10, TimeUnit.SECONDS);
+    }
+
+    private void doSubscribeAllServices() {
         try {
             //得到当前服务已经订阅的服务
             //这里其实已经在init的时候初始化过namingservice了，所以这里可以直接拿到当前服务已经订阅的服务
@@ -140,13 +146,11 @@ public class NacosRegisterCenter implements RegisterCenter {
             //拿到所有的服务名称后进行遍历
             while (CollectionUtils.isNotEmpty(serviseList)) {
                 log.info("service list size {}", serviseList.size());
-
                 for (String service : serviseList) {
                     //判断是否已经订阅了当前服务
                     if (subscribeService.contains(service)) {
                         continue;
                     }
-
                     //nacos事件监听器 订阅当前服务
                     //这里我们需要自己实现一个nacos的事件订阅类 来具体执行订阅执行时的操作
                     EventListener eventListener = new NacosRegisterListener();
@@ -157,12 +161,11 @@ public class NacosRegisterCenter implements RegisterCenter {
                 //遍历下一页的服务列表
                 serviseList = namingService.getServicesOfServer(++pageNo, pageSize, env).getData();
             }
-
         } catch (NacosException e) {
             throw new RuntimeException(e);
         }
-    }*/
-/*    public class NacosRegisterListener implements EventListener {
+    }
+   public class NacosRegisterListener implements EventListener {
 
         @Override
         public void onEvent(Event event) {
@@ -185,8 +188,8 @@ public class NacosRegisterCenter implements RegisterCenter {
                     List<Instance> allInstances = namingService.getAllInstances(service.getName(), env);
                     Set<ServiceInstance> set = new HashSet<>();
 
-                    *//**
-     * meta-data数据如下
+                    //**
+     /* meta-data数据如下
      * {
      *   "version": "1.0.0",
      *   "environment": "production",
@@ -195,7 +198,7 @@ public class NacosRegisterCenter implements RegisterCenter {
      *   "labels": "web, primary",
      *   "description": "Main production service"
      * }
-     *//*
+     */
                     for (Instance instance : allInstances) {
                         ServiceInstance serviceInstance =
                                 JSON.parseObject(instance.getMetadata().get(GatewayConst.META_DATA_KEY),
@@ -203,13 +206,11 @@ public class NacosRegisterCenter implements RegisterCenter {
                         set.add(serviceInstance);
                     }
                     //调用我们自己的订阅监听器
-                    //TODO 这里得好好理一下思路 为什么要怎么写 什么作用?
-                    registerCenterListenerList.stream().forEach(registerCenterListener ->
-                            registerCenterListener.onChange(serviceDefinition, set));
+                    registerCenterListenerList.forEach(registerCenterListener -> registerCenterListener.onChange(serviceDefinition, set));
                 } catch (NacosException e) {
                     throw new RuntimeException(e);
                 }
             }
         }
-    }*/
+    }
 }

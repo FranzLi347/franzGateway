@@ -31,9 +31,12 @@ public interface RegisterCenter {
      */
     void deregister(ServiceDefinition serviceDefinition, ServiceInstance serviceInstance);
 
+    void registerListener(RegisterCenterListener registerCenterListener);
+
     /**
      * 订阅所有服务变更
      * @param registerCenterListener
      */
-    void subscribeAllServices(RegisterCenterListener registerCenterListener);
+    void subscribeAllServices();
+
 }

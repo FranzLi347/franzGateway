@@ -1,6 +1,7 @@
 package franzli347.project.core.netty;
 
 import com.alibaba.fastjson2.JSON;
+import franzli347.project.common.config.DynamicConfigManager;
 import franzli347.project.common.config.ServiceDefinition;
 import franzli347.project.common.config.ServiceInstance;
 import franzli347.project.common.utils.NetUtils;
@@ -14,7 +15,6 @@ import java.util.ServiceLoader;
 import java.util.Set;
 
 
-
 /**
  * @author FranzLi347
  * @ClassName: Bootstrap
@@ -26,7 +26,8 @@ public class Bootstrap {
         Config config = ConfigLoader.getInstance().load(args);
         Container container = new Container(config);
         container.start();
-        final RegisterCenter registerCenter = registerAndSubscribe(config);
+        // 注册服务
+        registerAndSubscribe(config);
     }
 
     private static RegisterCenter registerAndSubscribe(Config config) {
@@ -43,6 +44,18 @@ public class Bootstrap {
 
         //注册
         registerCenter.register(serviceDefinition, serviceInstance);
+
+        registerCenter.registerListener((serviceDefinition1, serviceInstanceSet) -> {
+            log.info("refresh service and instance: {} {}", serviceDefinition1.getUniqueId(),
+                    JSON.toJSON(serviceInstanceSet));
+            DynamicConfigManager manager = DynamicConfigManager.getInstance();
+            //将这次变更事件影响之后的服务实例再次添加到对应的服务实例集合
+            manager.addServiceInstance(serviceDefinition1.getUniqueId(), serviceInstanceSet);
+            //修改发生对应的服务定义
+            manager.putServiceDefinition(serviceDefinition1.getUniqueId(), serviceDefinition1);
+        });
+
+        registerCenter.subscribeAllServices();
         return registerCenter;
     }
 
