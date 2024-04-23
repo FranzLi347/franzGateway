@@ -10,36 +10,21 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>impl</artifactId>
+    <artifactId>register-center-api</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <dependencies>
 
+    <dependencies>
         <dependency>
             <groupId>franzli347.project</groupId>
             <artifactId>common</artifactId>
             <version>${version}</version>
-
         </dependency>
-
-        <dependency>
-            <groupId>franzli347.project</groupId>
-            <artifactId>api</artifactId>
-            <version>${version}</version>
-
-        </dependency>
-
-        <!--引入nacos的客户端依赖-->
-        <dependency>
-            <groupId>com.alibaba.nacos</groupId>
-            <artifactId>nacos-client</artifactId>
-            <version>2.0.4</version>
-        </dependency>
-
     </dependencies>
+
 
 </project>

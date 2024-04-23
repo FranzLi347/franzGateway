@@ -98,7 +98,7 @@ public class ConfigLoader {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
-                    //
+                    log.error("close input stream error", e);
                 }
             }
         }

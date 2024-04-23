@@ -12,8 +12,11 @@
         <module>core</module>
         <module>common</module>
         <module>register-center</module>
-        <module>register-center/api</module>
-        <module>register-center/impl</module>
+        <module>register-center/register-center-api</module>
+        <module>register-center/register-center-impl</module>
+        <module>config-center</module>
+        <module>config-center/config-center-api</module>
+        <module>config-center/config-center-impl</module>
     </modules>
 
     <properties>

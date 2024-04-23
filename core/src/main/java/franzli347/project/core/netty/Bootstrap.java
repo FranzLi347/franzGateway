@@ -24,10 +24,17 @@ import java.util.Set;
 public class Bootstrap {
     public static void main(String[] args) {
         Config config = ConfigLoader.getInstance().load(args);
+        // ServiceLoader<ConfigCenter> serviceLoader = ServiceLoader.load(ConfigCenter.class);
+        // final ConfigCenter configCenter = serviceLoader.findFirst().orElseThrow(() -> {
+        //     log.error("not found ConfigCenter impl");
+        //     return new RuntimeException("not found ConfigCenter impl");
+        // });
+
         Container container = new Container(config);
         container.start();
         // 注册服务
         registerAndSubscribe(config);
+        
     }
 
     private static RegisterCenter registerAndSubscribe(Config config) {
@@ -45,7 +52,8 @@ public class Bootstrap {
         //注册
         registerCenter.register(serviceDefinition, serviceInstance);
 
-        registerCenter.registerListener((serviceDefinition1, serviceInstanceSet) -> {
+        registerCenter.registerListener(
+            (serviceDefinition1, serviceInstanceSet) -> {
             log.info("refresh service and instance: {} {}", serviceDefinition1.getUniqueId(),
                     JSON.toJSON(serviceInstanceSet));
             DynamicConfigManager manager = DynamicConfigManager.getInstance();
